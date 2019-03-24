@@ -1,7 +1,7 @@
-'use strict'
+'use strict';
 
 module.exports = {
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Origin
   |--------------------------------------------------------------------------
@@ -16,9 +16,9 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: false,
+	origin: true,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Methods
   |--------------------------------------------------------------------------
@@ -29,9 +29,9 @@ module.exports = {
   | Array - An array of allowed methods
   |
   */
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+	methods: [ 'GET', 'PUT', 'PATCH', 'POST', 'DELETE' ],
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Headers
   |--------------------------------------------------------------------------
@@ -47,9 +47,9 @@ module.exports = {
   | Function - Receives the current header and should return one of the above values.
   |
   */
-  headers: true,
+	headers: true,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Expose Headers
   |--------------------------------------------------------------------------
@@ -62,9 +62,9 @@ module.exports = {
   | Array - An array of allowed headers
   |
   */
-  exposeHeaders: false,
+	exposeHeaders: false,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Credentials
   |--------------------------------------------------------------------------
@@ -73,9 +73,9 @@ module.exports = {
   | boolean.
   |
   */
-  credentials: false,
+	credentials: false,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | MaxAge
   |--------------------------------------------------------------------------
@@ -83,5 +83,5 @@ module.exports = {
   | Define Access-Control-Allow-Max-Age
   |
   */
-  maxAge: 90
-}
+	maxAge: 90
+};
