@@ -24,3 +24,10 @@ Route.group(() => {
 	Route.post('/inscription', 'UserController.inscription');
 	Route.post('/connexion', 'UserController.connexion');
 }).prefix('auth');
+
+Route.group(() => {
+	Route.get('/profile', 'UserController.profile');
+	Route.put('/parametres', 'UserController.parametres');
+})
+	.prefix('compte')
+	.middleware([ 'auth:jwt' ]);

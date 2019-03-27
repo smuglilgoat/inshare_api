@@ -16,6 +16,15 @@ class UserController {
 
 		return token;
 	}
+
+	async profile({ auth }) {
+		const user = await User.query().where('id', auth.current.user.id).firstOrFail();
+		return user;
+	}
+
+	async parametres({ auth }) {
+		console.log('parametres');
+	}
 }
 
 module.exports = UserController;
