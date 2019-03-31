@@ -26,7 +26,8 @@ Route.group(() => {
 }).prefix('auth');
 
 Route.group(() => {
-	Route.put('/parametres', 'UserController.parametres');
+	Route.put('/majinfo', 'UserController.majinfo');
+	Route.put('/majmdp', 'UserController.majmdp');
 })
 	.prefix('compte')
 	.middleware([ 'auth:jwt' ]);
