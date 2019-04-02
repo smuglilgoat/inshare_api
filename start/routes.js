@@ -37,3 +37,11 @@ Route.group(() => {
 })
 	.prefix('profile')
 	.middleware([ 'auth:jwt' ]);
+
+Route.group(() => {
+	Route.post('/avatar', 'FileController.avatarupload');
+})
+	.prefix('uploads')
+	.middleware([ 'auth:jwt' ]);
+
+Route.get('uploads/images/avatars/:id.jpg', 'FileController.avatarget');
