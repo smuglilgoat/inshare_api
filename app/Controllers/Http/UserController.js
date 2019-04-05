@@ -5,17 +5,42 @@ const Hash = use('Hash');
 
 class UserController {
 	async inscription({ request, auth }) {
-		const userData = request.only([ 'username', 'email', 'password' ]);
-		const user = await User.create({ ...userData, ...{ role: 'Simple' } });
-		const token = await auth.generate(user);
+		try {
+			const userData = request.only([ 'username', 'email', 'password' ]);
+			const user = await User.create({ ...userData, ...{ role: 'Simple' } });
+			const token = await auth.generate(user);
 
-		return token;
+			return { user, token };
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite en mettant à jour la base de donnée."
+			});
+		}
 	}
 
 	async connexion({ request, auth }) {
-		const token = await auth.attempt(request.input('email'), request.input('password'));
+		try {
+			const token = await auth.attempt(request.input('email'), request.input('password'));
+			const user = await User.query()
+				.setHidden([ 'password' ])
+				.where('email', request.input('email'))
+				.firstOrFail();
 
-		return token;
+			return { user, token };
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite en mettant à jour la base de donnée."
+			});
+		}
+	}
+
+	async role({ auth }) {
+		const user = await User.query().setHidden([ 'password' ]).where('id', auth.current.user.id).firstOrFail();
+		return user.role;
 	}
 
 	async me({ auth }) {

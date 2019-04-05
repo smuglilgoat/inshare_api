@@ -17,12 +17,13 @@
 const Route = use('Route');
 
 Route.get('/', () => {
-	return { greeting: 'Hello world in JSON' };
+	return 'Server is running';
 });
 
 Route.group(() => {
 	Route.post('/inscription', 'UserController.inscription');
 	Route.post('/connexion', 'UserController.connexion');
+	Route.get('/role', 'UserController.role');
 }).prefix('auth');
 
 Route.group(() => {
@@ -37,11 +38,3 @@ Route.group(() => {
 })
 	.prefix('profile')
 	.middleware([ 'auth:jwt' ]);
-
-Route.group(() => {
-	Route.post('/avatar', 'FileController.avatarupload');
-})
-	.prefix('uploads')
-	.middleware([ 'auth:jwt' ]);
-
-Route.get('uploads/images/avatars/:id.jpg', 'FileController.avatarget');
