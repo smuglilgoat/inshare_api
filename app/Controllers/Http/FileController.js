@@ -1,7 +1,6 @@
 'use strict';
 const User = use('App/Models/User');
 const Drive = use('Drive');
-const fs = require('fs');
 
 class FileController {
 	async avatarPost({ request, auth, response }) {
