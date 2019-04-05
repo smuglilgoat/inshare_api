@@ -17,6 +17,7 @@
 const Route = use('Route');
 
 Route.get('/', () => {
+<<<<<<< HEAD
 	return 'Server is running';
 });
 
@@ -24,17 +25,32 @@ Route.group(() => {
 	Route.post('/inscription', 'UserController.inscription');
 	Route.post('/connexion', 'UserController.connexion');
 	Route.get('/role', 'UserController.role');
+=======
+	return 'Serveur en marche';
+});
+
+Route.group(() => {
+	Route.post('/register', 'UserController.register');
+	Route.post('/login', 'UserController.login');
+	Route.get('/user', 'UserController.getUser').middleware([ 'auth:jwt' ]);
+>>>>>>> clean up
 }).prefix('auth');
 
 Route.group(() => {
-	Route.put('/majinfo', 'UserController.majinfo');
-	Route.put('/majmdp', 'UserController.majmdp');
+	Route.put('/ids', 'UserController.updateIds');
+	Route.put('/password', 'UserController.updatePassword');
+	Route.post('/avatar', 'FileController.avatarPost');
 })
-	.prefix('compte')
+	.prefix('update')
 	.middleware([ 'auth:jwt' ]);
 
 Route.group(() => {
+<<<<<<< HEAD
 	Route.get('/moi', 'UserController.me');
 })
 	.prefix('profile')
 	.middleware([ 'auth:jwt' ]);
+=======
+	Route.get('/avatar/:id.jpg', 'FileController.avatarGet');
+}).prefix('view');
+>>>>>>> clean up
