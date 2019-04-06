@@ -38,4 +38,5 @@ Route.group(() => {
 Route.group(() => {
 	Route.get('/avatar/:id.jpg', 'FileController.avatarGet');
 	Route.get('/certificat', 'FileController.certifGet').middleware([ 'auth:jwt' ]);
+	Route.get('/users', 'UserController.getAllUsers').middleware([ 'auth:jwt' ]);
 }).prefix('view');

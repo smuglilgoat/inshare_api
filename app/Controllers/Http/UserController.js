@@ -98,6 +98,27 @@ class UserController {
 			});
 		}
 	}
+
+	async getAllUsers({ auth, response }) {
+		try {
+			const user = await User.query().setHidden([ 'password' ]).where('id', auth.current.user.id).firstOrFail();
+			if (user.role != 'Administrateur' && user.role != 'Moderateur') {
+				return response.status(500).json({
+					status: 'error',
+					message: "Une erreur s'est produite: Accès interdit."
+				});
+			}
+			const users = await User.all();
+			return users;
+		} catch (error) {
+			console.log(error);
+
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu récuperer les utilisateurs."
+			});
+		}
+	}
 }
 
 module.exports = UserController;
