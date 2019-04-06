@@ -3,9 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema');
 
-class CertificationSchema extends Schema {
+class CertificatSchema extends Schema {
 	up() {
-		this.create('certifications', (table) => {
+		this.create('certificats', (table) => {
 			table.increments();
 			table.boolean('valide').defaultTo(false);
 			table.string('preuve');
@@ -17,8 +17,8 @@ class CertificationSchema extends Schema {
 	}
 
 	down() {
-		this.drop('certifications');
+		this.drop('certificats');
 	}
 }
 
-module.exports = CertificationSchema;
+module.exports = CertificatSchema;

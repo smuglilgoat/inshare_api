@@ -30,10 +30,12 @@ Route.group(() => {
 	Route.put('/ids', 'UserController.updateIds');
 	Route.put('/password', 'UserController.updatePassword');
 	Route.post('/avatar', 'FileController.avatarPost');
+	Route.post('/certificat', 'FileController.certifPost').middleware([ 'auth:jwt' ]);
 })
 	.prefix('update')
 	.middleware([ 'auth:jwt' ]);
 
 Route.group(() => {
 	Route.get('/avatar/:id.jpg', 'FileController.avatarGet');
+	Route.get('/certificat', 'FileController.certifGet').middleware([ 'auth:jwt' ]);
 }).prefix('view');
