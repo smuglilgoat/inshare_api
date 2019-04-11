@@ -31,12 +31,16 @@ Route.group(() => {
 	Route.put('/password', 'UserController.updatePassword');
 	Route.post('/avatar', 'FileController.avatarPost');
 	Route.post('/certificat', 'FileController.certifPost').middleware([ 'auth:jwt' ]);
+	Route.delete('/certificat', 'FileController.deleteCertif').middleware([ 'auth:jwt' ]);
+	Route.put('/certificat', 'CertificatController.updateCertif').middleware([ 'auth:jwt' ]);
 })
 	.prefix('update')
 	.middleware([ 'auth:jwt' ]);
 
 Route.group(() => {
-	Route.get('/avatar/:id.jpg', 'FileController.avatarGet');
+	Route.get('/avatar/:id.jpg', 'FileController.avatarView');
+	Route.get('/certificat/:id.jpg', 'FileController.certifView');
 	Route.get('/certificat', 'FileController.certifGet').middleware([ 'auth:jwt' ]);
+	Route.get('/certificats', 'FileController.certifGetAll').middleware([ 'auth:jwt' ]);
 	Route.get('/users', 'UserController.getAllUsers').middleware([ 'auth:jwt' ]);
 }).prefix('view');

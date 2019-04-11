@@ -103,7 +103,7 @@ class UserController {
 		try {
 			const user = await User.query().setHidden([ 'password' ]).where('id', auth.current.user.id).firstOrFail();
 			if (user.role != 'Administrateur' && user.role != 'Moderateur') {
-				return response.status(500).json({
+				return response.status(401).json({
 					status: 'error',
 					message: "Une erreur s'est produite: Accès interdit."
 				});

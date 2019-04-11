@@ -1,93 +1,34 @@
-'use strict'
+'use strict';
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const User = use('App/Models/User');
+const Certificat = use('App/Models/Certificat');
 
-/**
- * Resourceful controller for interacting with certificats
- */
 class CertificatController {
-  /**
-   * Show a list of all certificats.
-   * GET certificats
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-  }
+	async updateCertif({ request, auth, response }) {
+		try {
+			const user = await User.query().where('id', auth.current.user.id).firstOrFail();
+			if (user.role != 'Administrateur' && user.role != 'Moderateur') {
+				return response.status(401).json({
+					status: 'error',
+					message: "Une erreur s'est produite: Accès interdit."
+				});
+			}
 
-  /**
-   * Render a form to be used for creating a new certificat.
-   * GET certificats/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new certificat.
-   * POST certificats
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-  }
-
-  /**
-   * Display a single certificat.
-   * GET certificats/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing certificat.
-   * GET certificats/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update certificat details.
-   * PUT or PATCH certificats/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a certificat with id.
-   * DELETE certificats/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
-  }
+			const user_certif = await User.query().where('id', request.input('user_id')).firstOrFail();
+			const certif = await Certificat.query().where('user_id', user_certif.id).firstOrFail();
+			console.log(certif);
+			certif.valide = true;
+			certif.dateecheance = request.input('date');
+			await certif.save();
+			console.log(certif);
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu supprimer le certificat."
+			});
+		}
+	}
 }
 
-module.exports = CertificatController
+module.exports = CertificatController;
