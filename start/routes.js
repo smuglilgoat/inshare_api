@@ -22,25 +22,28 @@ Route.get('/', () => {
 
 Route.group(() => {
 	Route.post('/register', 'UserController.register');
+	Route.post('/certificat', 'CertificatController.createCertif');
+}).prefix('create');
+
+Route.group(() => {
 	Route.post('/login', 'UserController.login');
 	Route.get('/user', 'UserController.getUser').middleware([ 'auth:jwt' ]);
-}).prefix('auth');
+	Route.get('/users', 'UserController.getUsers').middleware([ 'auth:jwt' ]);
+	Route.get('/avatar/:id.jpg', 'UserController.viewAvatar');
+	Route.get('/certificat/:id.jpg', 'CertificatController.viewCertif');
+	Route.get('/certificat', 'CertificatController.getCertif').middleware([ 'auth:jwt' ]);
+	Route.get('/certificats', 'CertificatController.getCertifs').middleware([ 'auth:jwt' ]);
+}).prefix('read');
 
 Route.group(() => {
 	Route.put('/ids', 'UserController.updateIds');
 	Route.put('/password', 'UserController.updatePassword');
-	Route.post('/avatar', 'FileController.avatarPost');
-	Route.post('/certificat', 'FileController.certifPost').middleware([ 'auth:jwt' ]);
-	Route.delete('/certificat', 'FileController.deleteCertif').middleware([ 'auth:jwt' ]);
-	Route.put('/certificat', 'CertificatController.updateCertif').middleware([ 'auth:jwt' ]);
+	Route.post('/avatar', 'UserController.updateAvatar');
+	Route.put('/certificat', 'CertificatController.updateCertif');
 })
 	.prefix('update')
 	.middleware([ 'auth:jwt' ]);
 
 Route.group(() => {
-	Route.get('/avatar/:id.jpg', 'FileController.avatarView');
-	Route.get('/certificat/:id.jpg', 'FileController.certifView');
-	Route.get('/certificat', 'FileController.certifGet').middleware([ 'auth:jwt' ]);
-	Route.get('/certificats', 'FileController.certifGetAll').middleware([ 'auth:jwt' ]);
-	Route.get('/users', 'UserController.getAllUsers').middleware([ 'auth:jwt' ]);
-}).prefix('view');
+	Route.delete('/certificat', 'CertificatController.deleteCertif');
+}).prefix('delete');
