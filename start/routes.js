@@ -22,7 +22,7 @@ Route.get('/', () => {
 
 Route.group(() => {
 	Route.post('/register', 'UserController.register');
-	Route.post('/certificat', 'CertificatController.createCertif');
+	Route.post('/certificat', 'CertificatController.createCertif').middleware([ 'auth:jwt' ]);
 }).prefix('create');
 
 Route.group(() => {
@@ -39,6 +39,7 @@ Route.group(() => {
 	Route.put('/ids', 'UserController.updateIds');
 	Route.put('/password', 'UserController.updatePassword');
 	Route.post('/avatar', 'UserController.updateAvatar');
+	Route.put('/user', 'UserController.updateUser');
 	Route.put('/certificat', 'CertificatController.updateCertif');
 })
 	.prefix('update')
@@ -46,4 +47,7 @@ Route.group(() => {
 
 Route.group(() => {
 	Route.delete('/certificat', 'CertificatController.deleteCertif');
-}).prefix('delete');
+	Route.delete('/user', 'UserController.deleteUser');
+})
+	.prefix('delete')
+	.middleware([ 'auth:jwt' ]);

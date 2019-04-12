@@ -2,6 +2,7 @@
 
 const User = use('App/Models/User');
 const Certificat = use('App/Models/Certificat');
+const Drive = use('Drive');
 
 class CertificatController {
 	//CREATE
@@ -26,7 +27,7 @@ class CertificatController {
 			}
 
 			const certificat = await user.certificat().create({
-				preuve: 'http://127.0.0.1:3333/view/certificat/' + user.id + '.jpg',
+				preuve: 'http://127.0.0.1:3333/read/certificat/' + user.id + '.jpg',
 				typec: request.all().type,
 				user_id: user.id
 			});
@@ -99,11 +100,9 @@ class CertificatController {
 
 			const user_certif = await User.query().where('id', request.input('user_id')).firstOrFail();
 			const certif = await Certificat.query().where('user_id', user_certif.id).firstOrFail();
-			console.log(certif);
 			certif.valide = true;
 			certif.dateecheance = request.input('date');
 			await certif.save();
-			console.log(certif);
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({

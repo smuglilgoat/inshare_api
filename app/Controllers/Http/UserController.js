@@ -1,7 +1,7 @@
 'use strict';
 
-const User = use('App/Models/User');
 const Certificat = use('App/Models/Certificat');
+const User = use('App/Models/User');
 const Drive = use('Drive');
 const Hash = use('Hash');
 
@@ -151,7 +151,7 @@ class UserController {
 				});
 			}
 
-			user.avatar = 'http://127.0.0.1:3333/view/avatar/' + user.id + '.jpg';
+			user.avatar = 'http://127.0.0.1:3333/read/avatar/' + user.id + '.jpg';
 			await user.save();
 		} catch (error) {
 			console.log(error);
@@ -162,7 +162,61 @@ class UserController {
 		}
 	}
 
+	async updateUser({ request, auth, response }) {
+		try {
+			const authUser = await User.query()
+				.setHidden([ 'password' ])
+				.where('id', auth.current.user.id)
+				.firstOrFail();
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur') {
+				return response.status(401).json({
+					status: 'error',
+					message: "Une erreur s'est produite: Accès interdit."
+				});
+			}
+
+			const user = await User.query().setHidden([ 'password' ]).where('id', request.input('id')).firstOrFail();
+			user.role = request.input('role');
+			user.domaine = request.input('domaine');
+			if (user.role == 'Etudiant') {
+				user.niveauetud = request.input('niveau');
+			} else if (user.role == 'Enseignant') {
+				user.niveauense = request.input('niveau');
+			}
+			await user.save();
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu mettre à jour l'utilisateur."
+			});
+		}
+	}
+
 	//DELETE
+	async deleteUser({ request, auth, response }) {
+		try {
+			const authUser = await User.query()
+				.setHidden([ 'password' ])
+				.where('id', auth.current.user.id)
+				.firstOrFail();
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur') {
+				return response.status(401).json({
+					status: 'error',
+					message: "Une erreur s'est produite: Accès interdit."
+				});
+			}
+
+			await Certificat.query().where('user_id', request.input('id')).delete();
+			await User.query().where('id', request.input('id')).delete();
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu supprimer l'utilisateur."
+			});
+		}
+	}
 }
 
 module.exports = UserController;
