@@ -17,11 +17,11 @@
 const Route = use('Route');
 
 Route.get('/', () => {
-	return 'Serveur en marche';
+	return 'API en marche';
 });
 
 Route.group(() => {
-	Route.post('/register', 'UserController.register');
+	Route.post('/register', 'UserController.createUser');
 	Route.post('/certificat', 'CertificatController.createCertif').middleware([ 'auth:jwt' ]);
 }).prefix('create');
 

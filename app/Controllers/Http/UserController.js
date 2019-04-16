@@ -7,13 +7,17 @@ const Hash = use('Hash');
 
 class UserController {
 	//CREATE
-	async register({ request, auth, response }) {
+	async createUser({ request, auth, response }) {
 		try {
 			const userData = request.only([ 'username', 'email', 'password' ]);
-			const user = await User.create({ ...userData, ...{ role: 'Simple' } });
-			const token = await auth.generate(user);
+			const createUser = await User.create({ ...userData, ...{ role: 'Simple' } });
+			const token = await auth.generate(createUser);
 
-			return token;
+			const user = await User.query()
+				.setHidden([ 'password' ])
+				.where('email', request.input('email'))
+				.firstOrFail();
+			response.status(201).json({ token, user });
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({
@@ -27,8 +31,12 @@ class UserController {
 	async login({ request, auth, response }) {
 		try {
 			const token = await auth.attempt(request.input('email'), request.input('password'));
+			const user = await User.query()
+				.setHidden([ 'password' ])
+				.where('email', request.input('email'))
+				.firstOrFail();
 
-			return token;
+			response.status(200).json({ token, user });
 		} catch (error) {
 			console.log(error);
 
@@ -178,11 +186,7 @@ class UserController {
 			const user = await User.query().setHidden([ 'password' ]).where('id', request.input('id')).firstOrFail();
 			user.role = request.input('role');
 			user.domaine = request.input('domaine');
-			if (user.role == 'Etudiant') {
-				user.niveauetud = request.input('niveau');
-			} else if (user.role == 'Enseignant') {
-				user.niveauense = request.input('niveau');
-			}
+			user.niveau = request.input('niveau');
 			await user.save();
 		} catch (error) {
 			console.log(error);

@@ -13,8 +13,7 @@ class UserSchema extends Schema {
 			table.string('avatar').defaultTo('http://127.0.0.1:3333/read/avatar/0.jpg');
 			table.enu('role', [ 'Simple', 'Moderateur', 'Administrateur', 'Etudiant', 'Enseignant' ]);
 			table.string('domaine');
-			table.string('niveauetud');
-			table.string('niveauense');
+			table.string('niveau');
 			table.timestamps();
 		});
 	}
