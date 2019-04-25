@@ -37,6 +37,9 @@ class User extends Model {
 	certificat() {
 		return this.hasOne('App/Models/Certificat');
 	}
+	document() {
+		return this.hasMany('App/Models/Document');
+	}
 }
 
 module.exports = User;

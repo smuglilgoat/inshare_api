@@ -23,6 +23,7 @@ Route.get('/', () => {
 Route.group(() => {
 	Route.post('/register', 'UserController.createUser');
 	Route.post('/certificat', 'CertificatController.createCertif').middleware([ 'auth:jwt' ]);
+	Route.post('/document', 'DocumentController.createDoc').middleware(['auth:jwt']);
 }).prefix('create');
 
 Route.group(() => {
