@@ -1,5 +1,7 @@
 'use strict';
 const User = use('App/Models/User');
+const Drive = use('Drive');
+const Document = use('App/Models/Document');
 
 class DocumentController {
 	//CREATE
@@ -45,14 +47,37 @@ class DocumentController {
 			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + params.id + '.jpg'
 		);
 	}
+
+	async getDoc({ request, response }) {
+		try {
+			const exists = await Drive.exists(
+				'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + request.input('id') + '.jpg'
+			);
+
+			if (exists) {
+				const document = await Document.query().where('id', request.input('id')).firstOrFail();
+				return document;
+			}
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu recuperer le document."
+			});
+		}
+	}
+
 	//UPDATE
 	async updateDoc({ request, auth, response }) {
 		try {
 			const user = await User.query().where('id', auth.current.user.id).firstOrFail();
-			await user
-				.document()
-				.where('id', request.input('id'))
-				.update({ titre: request.input('titre'), description: request.input('description') });
+			await user.document().where('id', request.input('id')).update({
+				titre: request.input('titre'),
+				description: request.input('description'),
+				langue: request.input('langue'),
+				type: request.input('type'),
+				domaine: request.input('domaine')
+			});
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({

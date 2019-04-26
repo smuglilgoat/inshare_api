@@ -33,6 +33,7 @@ Route.group(() => {
 	Route.get('/avatar/:id.jpg', 'UserController.viewAvatar');
 	Route.get('/certificat/:id.jpg', 'CertificatController.viewCertif');
 	Route.get('/document/:id.jpg', 'DocumentController.viewDoc');
+	Route.get('/document', 'DocumentController.getDoc');
 	Route.get('/certificat', 'CertificatController.getCertif').middleware([ 'auth:jwt' ]);
 	Route.get('/certificats', 'CertificatController.getCertifs').middleware([ 'auth:jwt' ]);
 }).prefix('read');
