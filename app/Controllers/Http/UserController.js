@@ -82,6 +82,20 @@ class UserController {
 		}
 	}
 
+	async getUserById({ params, response }) {
+		try {
+			const user = await User.query().setHidden([ 'password' ]).where('id', params.id).firstOrFail();
+			return user;
+		} catch (error) {
+			console.log(error);
+
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu récuperer l'utilisateur."
+			});
+		}
+	}
+
 	async viewAvatar({ params }) {
 		return await Drive.get(
 			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Users\\Avatars\\' + params.id + '.jpg'

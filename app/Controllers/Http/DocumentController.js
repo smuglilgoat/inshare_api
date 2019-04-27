@@ -56,6 +56,8 @@ class DocumentController {
 
 			if (exists) {
 				const document = await Document.query().where('id', request.input('id')).firstOrFail();
+				document.vues++;
+				document.save();
 				return document;
 			}
 		} catch (error) {
@@ -63,6 +65,19 @@ class DocumentController {
 			return response.status(500).json({
 				status: 'error',
 				message: "Une erreur s'est produite: Nous n'avons pas pu recuperer le document."
+			});
+		}
+	}
+
+	async getDocs({ request, response }) {
+		try {
+			const docs = await Document.query().where('type', request.input('type')).fetch();
+			return docs;
+		} catch (error) {
+			console.log(error);
+			return response.status(500).json({
+				status: 'error',
+				message: "Une erreur s'est produite: Nous n'avons pas pu recuperer les documents."
 			});
 		}
 	}
