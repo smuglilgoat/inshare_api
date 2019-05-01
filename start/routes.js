@@ -21,40 +21,29 @@ Route.get('/', () => {
 });
 
 Route.group(() => {
-	Route.post('/register', 'UserController.createUser');
-	Route.post('/certificat', 'CertificatController.createCertif').middleware([ 'auth:jwt' ]);
-	Route.post('/document', 'DocumentController.createDoc').middleware([ 'auth:jwt' ]);
-}).prefix('create');
+	Route.post('/register', 'AuthController.register');
+	Route.post('/login', 'AuthController.login');
+}).prefix('auth');
 
-Route.group(() => {
-	Route.post('/login', 'UserController.login');
-	Route.get('/user', 'UserController.getUser').middleware([ 'auth:jwt' ]);
-	Route.get('/users', 'UserController.getUsers').middleware([ 'auth:jwt' ]);
-	Route.get('/user/:id', 'UserController.getUserById');
-	Route.get('/avatar/:id.jpg', 'UserController.viewAvatar');
-	Route.get('/certificat/:id.jpg', 'CertificatController.viewCertif');
-	Route.get('/document/:id.jpg', 'DocumentController.viewDoc');
-	Route.get('/document', 'DocumentController.getDoc');
-	Route.get('/documents', 'DocumentController.getDocs');
-	Route.get('/certificat', 'CertificatController.getCertif').middleware([ 'auth:jwt' ]);
-	Route.get('/certificats', 'CertificatController.getCertifs').middleware([ 'auth:jwt' ]);
-}).prefix('read');
+Route.get('/users', 'UserController.index').middleware([ 'auth:jwt' ]);
+Route.get('/users/:id', 'UserController.show');
+Route.put('/users/:id', 'UserController.update').middleware([ 'auth:jwt' ]);
+Route.delete('/users/:id', 'UserController.delete').middleware([ 'auth:jwt' ]);
 
-Route.group(() => {
-	Route.put('/ids', 'UserController.updateIds');
-	Route.put('/password', 'UserController.updatePassword');
-	Route.post('/avatar', 'UserController.updateAvatar');
-	Route.put('/user', 'UserController.updateUser');
-	Route.put('/certificat', 'CertificatController.updateCertif');
-	Route.put('/document', 'DocumentController.updateDoc');
-})
-	.prefix('update')
-	.middleware([ 'auth:jwt' ]);
+Route.get('/avatars/:id.jpg', 'FileController.viewAvatar');
+Route.post('/avatars', 'FileController.postAvatar').middleware([ 'auth:jwt' ]);
+Route.get('/certificats/:id.jpg', 'FileController.viewCertif');
+Route.get('/documents/:id.jpg', 'FileController.viewDoc');
 
-Route.group(() => {
-	Route.delete('/certificat', 'CertificatController.deleteCertif');
-	Route.delete('/user', 'UserController.deleteUser');
-	Route.delete('/document', 'DocumentController.deleteDoc');
-})
-	.prefix('delete')
-	.middleware([ 'auth:jwt' ]);
+Route.get('/certificats', 'CertificatController.index').middleware([ 'auth:jwt' ]);
+Route.post('/certificats', 'CertificatController.create').middleware([ 'auth:jwt' ]);
+Route.get('/certificats/:id', 'CertificatController.show').middleware([ 'auth:jwt' ]);
+Route.put('/certificats/:id', 'CertificatController.update').middleware([ 'auth:jwt' ]);
+Route.delete('/certificats/:id', 'CertificatController.delete').middleware([ 'auth:jwt' ]);
+
+Route.get('/documents', 'DocumentController.index').middleware([ 'auth:jwt' ]);
+Route.get('/documents/:type', 'DocumentController.queryType')
+Route.post('/documents', 'DocumentController.create').middleware([ 'auth:jwt' ]);
+Route.get('/documents/:id', 'DocumentController.show');
+Route.put('/documents/:id', 'DocumentController.update').middleware([ 'auth:jwt' ]);
+Route.delete('/documents/:id', 'DocumentController.delete').middleware([ 'auth:jwt' ]);

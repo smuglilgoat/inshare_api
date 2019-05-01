@@ -4,10 +4,31 @@ const Drive = use('Drive');
 const Document = use('App/Models/Document');
 
 class DocumentController {
-	//CREATE
-	async createDoc({ request, auth, response }) {
+	async index({ auth, response }) {
 		try {
-			const user = await User.query().where('id', auth.current.user.id).firstOrFail();
+			const authUser = auth.current.user;
+
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur') {
+				return response.status(401).json({
+					status: 'error',
+					message: 'Accès interdit.'
+				});
+			}
+
+			const docs = await Document.all();
+			response.status(200).json({ docs });
+		} catch (error) {
+			console.log(error);
+			return response.status(404).json({
+				status: 'error',
+				message: "Nous n'avons pas pu recuperer les documents."
+			});
+		}
+	}
+
+	async create({ request, auth, response }) {
+		try {
+			const user = auth.current.user;
 			const file = request.file('file_0', {
 				types: [ 'image' ],
 				size: '5mb'
@@ -19,16 +40,16 @@ class DocumentController {
 					name: ''.concat(document.id).concat('.jpg'),
 					overwrite: true
 				});
-				document.link = 'http://127.0.0.1:3333/read/document/' + document.id + '.jpg';
+				document.link = 'http://127.0.0.1:3333/documents/' + document.id + '.jpg';
 				document.taille = file.size;
 				document.save();
-				return document;
+				response.status(201).json({ document });
 			} catch (error) {
 				if (!file.moved()) {
 					console.log(error);
 					return response.status(500).json({
 						status: 'error',
-						message: "Une erreur s'est produite: Nous n'avons pas pu stocker l'image."
+						message: "Nous n'avons pas pu stocker l'image."
 					});
 				}
 			}
@@ -36,82 +57,98 @@ class DocumentController {
 			console.log(error);
 			return response.status(500).json({
 				status: 'error',
-				message: "Une erreur s'est produite: Nous n'avons pas pu enregistrer votre fichier."
+				message: "Nous n'avons pas pu enregistrer votre fichier."
 			});
 		}
 	}
 
-	//READ
-	async viewDoc({ params, response }) {
-		return response.download(
-			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + params.id + '.jpg'
-		);
-	}
-
-	async getDoc({ request, response }) {
+	async show({ params, response }) {
 		try {
 			const exists = await Drive.exists(
-				'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + request.input('id') + '.jpg'
+				'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + params.id + '.jpg'
 			);
 
 			if (exists) {
-				const document = await Document.query().where('id', request.input('id')).firstOrFail();
+				const document = await Document.query().where('id', params.id).firstOrFail();
 				document.vues++;
 				document.save();
-				return document;
+				response.status(200).json({ document });
 			}
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({
 				status: 'error',
-				message: "Une erreur s'est produite: Nous n'avons pas pu recuperer le document."
+				message: "Nous n'avons pas pu recuperer le document."
 			});
 		}
 	}
 
-	async getDocs({ request, response }) {
+	async queryType({ params, response }) {
 		try {
-			const docs = await Document.query().where('type', request.input('type')).fetch();
-			return docs;
+			const docs = await Document.query().where('type', params.type).fetch();
+			response.status(200).json({ docs });
 		} catch (error) {
 			console.log(error);
-			return response.status(500).json({
+			return response.status(404).json({
 				status: 'error',
-				message: "Une erreur s'est produite: Nous n'avons pas pu recuperer les documents."
+				message: "Nous n'avons pas pu recuperer les documents."
 			});
 		}
 	}
 
-	//UPDATE
-	async updateDoc({ request, auth, response }) {
+	async update({ request, params, auth, response }) {
 		try {
-			const user = await User.query().where('id', auth.current.user.id).firstOrFail();
-			await user.document().where('id', request.input('id')).update({
+			const authUser = auth.current.user;
+			const doc = await Document.query().where('id', params.id).firstOrFail();
+
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur' && authUser.id != doc.user_id) {
+				return response.status(401).json({
+					status: 'error',
+					message: 'Accès interdit.'
+				});
+			}
+			await doc.update({
 				titre: request.input('titre'),
 				description: request.input('description'),
 				langue: request.input('langue'),
-				type: request.input('type'),
 				domaine: request.input('domaine')
 			});
+			if (request.input('type')) {
+				doc.type = request.input('type');
+			}
+			if (request.input('tags')) {
+				doc.tags = request.input('tags');
+			}
+
+			await doc.save();
+			response.status(200);
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({
 				status: 'error',
-				message: "Une erreur s'est produite: Nous n'avons pas pu supprimer votre fichier."
+				message: "Nous n'avons pas pu mettre à jour le document."
 			});
 		}
 	}
 
-	//DELETE
-	async deleteDoc({ request, auth, response }) {
+	async delete({ params, auth, response }) {
 		try {
-			const user = await User.query().where('id', auth.current.user.id).firstOrFail();
-			await user.document().where('id', request.input('id')).delete();
+			const authUser = auth.current.user;
+
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur') {
+				return response.status(401).json({
+					status: 'error',
+					message: 'Accès interdit.'
+				});
+			}
+
+			await Document.query().where('id', params.id).delete();
+			response.status(204);
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({
 				status: 'error',
-				message: "Une erreur s'est produite: Nous n'avons pas pu supprimer votre fichier."
+				message: "Nous n'avons pas pu supprimer le document."
 			});
 		}
 	}
