@@ -10,7 +10,7 @@ class CertificatSchema extends Schema {
 			table.boolean('valide').defaultTo(false);
 			table.string('preuve');
 			table.enu('typec', [ 'Badge', 'Certificat de Scolarite', 'Contrat de Travail' ]);
-			table.date('dateecheance');
+			table.date('dateecheance').defaultTo('1900-01-01');
 			table.integer('user_id').unsigned().references('id').inTable('users');
 			table.timestamps();
 		});

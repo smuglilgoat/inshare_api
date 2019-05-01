@@ -107,12 +107,12 @@ class DocumentController {
 					message: 'Accès interdit.'
 				});
 			}
-			await doc.update({
-				titre: request.input('titre'),
-				description: request.input('description'),
-				langue: request.input('langue'),
-				domaine: request.input('domaine')
-			});
+
+			doc.titre = request.input('titre');
+			doc.description = request.input('description');
+			doc.langue = request.input('langue');
+			doc.domaine = request.input('domaine');
+
 			if (request.input('type')) {
 				doc.type = request.input('type');
 			}

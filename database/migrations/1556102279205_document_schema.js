@@ -17,7 +17,7 @@ class DocumentSchema extends Schema {
 			table.string('domaine');
 			table.text('tags', 'text');
 			table.integer('evaluation');
-			table.integer('vues');
+			table.integer('vues').defaultTo(0);
 			table.integer('user_id').unsigned().references('id').inTable('users');
 			table.timestamps();
 		});

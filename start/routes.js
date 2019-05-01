@@ -42,7 +42,7 @@ Route.put('/certificats/:id', 'CertificatController.update').middleware([ 'auth:
 Route.delete('/certificats/:id', 'CertificatController.delete').middleware([ 'auth:jwt' ]);
 
 Route.get('/documents', 'DocumentController.index').middleware([ 'auth:jwt' ]);
-Route.get('/documents/:type', 'DocumentController.queryType')
+Route.get('/documents/type=:type', 'DocumentController.queryType');
 Route.post('/documents', 'DocumentController.create').middleware([ 'auth:jwt' ]);
 Route.get('/documents/:id', 'DocumentController.show');
 Route.put('/documents/:id', 'DocumentController.update').middleware([ 'auth:jwt' ]);
