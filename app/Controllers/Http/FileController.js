@@ -49,12 +49,6 @@ class FileController {
 			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Users\\Certificats\\' + params.id + '.jpg'
 		);
 	}
-
-	async viewDoc({ params, response }) {
-		return response.download(
-			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + params.id + '.jpg'
-		);
-	}
 }
 
 module.exports = FileController;

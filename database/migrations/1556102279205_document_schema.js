@@ -8,15 +8,20 @@ class DocumentSchema extends Schema {
 		this.create('documents', (table) => {
 			table.increments();
 			table.boolean('public').defaultTo(false);
-			table.string('link');
+			table.enu('type', [ 'Image', 'PDF', 'Doc', 'Sheet', 'Slide' ]);
 			table.string('titre');
 			table.text('description', 'text');
 			table.enu('langue', [ 'Français', 'Arabe', 'Anglais' ]);
-			table.integer('taille').unsigned();
-			table.enu('type', [ 'Support de Cours', 'Note de Cours', 'Série de TD', 'Série de TP', 'Examination' ]);
+			table.enu('categorie', [
+				'Support de Cours',
+				'Note de Cours',
+				'Série de TD',
+				'Série de TP',
+				'Examination'
+			]);
 			table.string('domaine');
 			table.text('tags', 'text');
-			table.integer('evaluation');
+			table.integer('evaluation').defaultTo(0);
 			table.integer('vues').defaultTo(0);
 			table.integer('user_id').unsigned().references('id').inTable('users');
 			table.timestamps();

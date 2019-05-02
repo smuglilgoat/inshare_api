@@ -33,7 +33,9 @@ Route.delete('/users/:id', 'UserController.delete').middleware([ 'auth:jwt' ]);
 Route.get('/avatars/:id.jpg', 'FileController.viewAvatar');
 Route.post('/avatars', 'FileController.postAvatar').middleware([ 'auth:jwt' ]);
 Route.get('/certificats/:id.jpg', 'FileController.viewCertif');
-Route.get('/documents/:id.jpg', 'FileController.viewDoc');
+
+Route.get('/documents/:id/images/:filename', 'ImageController.viewImage');
+Route.get('/documents/:id/images', 'ImageController.index');
 
 Route.get('/certificats', 'CertificatController.index').middleware([ 'auth:jwt' ]);
 Route.post('/certificats', 'CertificatController.create').middleware([ 'auth:jwt' ]);
@@ -42,7 +44,7 @@ Route.put('/certificats/:id', 'CertificatController.update').middleware([ 'auth:
 Route.delete('/certificats/:id', 'CertificatController.delete').middleware([ 'auth:jwt' ]);
 
 Route.get('/documents', 'DocumentController.index').middleware([ 'auth:jwt' ]);
-Route.get('/documents/type=:type', 'DocumentController.queryType');
+Route.get('/documents/category=:category', 'DocumentController.queryCategory');
 Route.post('/documents', 'DocumentController.create').middleware([ 'auth:jwt' ]);
 Route.get('/documents/:id', 'DocumentController.show');
 Route.put('/documents/:id', 'DocumentController.update').middleware([ 'auth:jwt' ]);
