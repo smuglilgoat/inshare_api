@@ -114,6 +114,19 @@ class UserController {
 			});
 		}
 	}
+
+	async queryList({ response }) {
+		try {
+			const users = await User.query().setVisible([ 'id', 'username', 'avatar', 'role' ]).fetch();
+			return response.status(200).json({ users });
+		} catch (error) {
+			console.log(error);
+			return response.status(404).json({
+				status: 'error',
+				message: "Nous n'avons pas pu recuperer les utilisateurs."
+			});
+		}
+	}
 }
 
 module.exports = UserController;

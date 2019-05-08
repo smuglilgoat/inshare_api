@@ -13,10 +13,10 @@ class DocumentSchema extends Schema {
 			table.text('description', 'text');
 			table.enu('langue', [ 'Français', 'Arabe', 'Anglais' ]);
 			table.enu('categorie', [
-				'Support de Cours',
-				'Note de Cours',
-				'Série de TD',
-				'Série de TP',
+				'Support_de_Cours',
+				'Note_de_Cours',
+				'Serie_de_TD',
+				'Serie_de_TP',
 				'Examination'
 			]);
 			table.string('domaine');

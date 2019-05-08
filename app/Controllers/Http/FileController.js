@@ -49,6 +49,25 @@ class FileController {
 			'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Users\\Certificats\\' + params.id + '.jpg'
 		);
 	}
+
+	async downloadDoc({ params, response }) {
+		try {
+			// require modules
+			const fs = require('fs');
+			const archiver = require('archiver');
+			const exists = await Drive.exists(
+				'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + params.id + '.zip'
+			);
+
+			if (exists) {
+				response.attachment(
+					'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + params.id + '.zip'
+				);
+			} 
+		} catch (error) {
+			console.log(error);
+		}
+	}
 }
 
 module.exports = FileController;

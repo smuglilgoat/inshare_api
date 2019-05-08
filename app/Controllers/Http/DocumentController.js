@@ -1,8 +1,5 @@
 'use strict';
-const User = use('App/Models/User');
-const Drive = use('Drive');
 const Document = use('App/Models/Document');
-const Image = use('App/Models/Image');
 
 class DocumentController {
 	async index({ auth, response }) {
@@ -62,6 +59,27 @@ class DocumentController {
 							}
 						}
 					);
+					const fs = require('fs');
+					const archiver = require('archiver');
+
+					// create a file to stream archive data to.
+					var output = fs.createWriteStream(
+						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
+					);
+					var archive = archiver('zip');
+
+					// pipe archive data to the file
+					archive.pipe(output);
+
+					// append files from a sub-directory, putting its contents at the root of archive
+					archive.directory(
+						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
+						false
+					);
+
+					// finalize the archive (ie we are done appending files but streams have to finish yet)
+					// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+					archive.finalize();
 					response.status(201).json({ document });
 				} catch (error) {
 					console.log(error);
@@ -83,6 +101,27 @@ class DocumentController {
 							overwrite: true
 						}
 					);
+					const fs = require('fs');
+					const archiver = require('archiver');
+
+					// create a file to stream archive data to.
+					var output = fs.createWriteStream(
+						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
+					);
+					var archive = archiver('zip');
+
+					// pipe archive data to the file
+					archive.pipe(output);
+
+					// append files from a sub-directory, putting its contents at the root of archive
+					archive.directory(
+						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
+						false
+					);
+
+					// finalize the archive (ie we are done appending files but streams have to finish yet)
+					// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+					archive.finalize();
 					response.status(201).json({ document });
 				} catch (error) {
 					console.log(error);
@@ -114,7 +153,22 @@ class DocumentController {
 
 	async queryCategory({ params, response }) {
 		try {
+			console.log('# Document Query = ' + params.category);
+
 			const docs = await Document.query().where('categorie', params.category).whereNot('public', 0).fetch();
+			response.status(200).json({ docs });
+		} catch (error) {
+			console.log(error);
+			return response.status(404).json({
+				status: 'error',
+				message: "Nous n'avons pas pu recuperer les documents."
+			});
+		}
+	}
+
+	async queryUser({ params, response }) {
+		try {
+			const docs = await Document.query().where('user_id', params.id).fetch();
 			response.status(200).json({ docs });
 		} catch (error) {
 			console.log(error);

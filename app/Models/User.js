@@ -40,6 +40,9 @@ class User extends Model {
 	document() {
 		return this.hasMany('App/Models/Document');
 	}
+	comments() {
+		return this.hasMany('App/Models/Comment');
+	}
 }
 
 module.exports = User;

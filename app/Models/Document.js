@@ -7,6 +7,9 @@ class Document extends Model {
 	image() {
 		return this.hasMany('App/Models/Image');
 	}
+	comments() {
+		return this.hasMany('App/Models/Comment');
+	}
 }
 
 module.exports = Document;
