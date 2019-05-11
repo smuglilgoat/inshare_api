@@ -55,6 +55,7 @@ Route.get('/documents/category=:category', 'DocumentController.queryCategory');
 Route.get('/documents/user=:id', 'DocumentController.queryUser');
 
 Route.post('/documents/:id/report', 'MailController.report').middleware([ 'auth:jwt' ]);
+Route.post('/documents/:id/rate', 'RatingController.update').middleware([ 'auth:jwt' ]);
 
 Route.get('/documents/:id/comments', 'CommentController.index');
 Route.put('/documents/:id/comments', 'CommentController.create').middleware([ 'auth:jwt' ]);

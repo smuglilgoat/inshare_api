@@ -21,7 +21,7 @@ class DocumentSchema extends Schema {
 			]);
 			table.string('domaine');
 			table.text('tags', 'text');
-			table.integer('evaluation').defaultTo(0);
+			table.decimal('evaluation').defaultTo(0);
 			table.integer('vues').defaultTo(0);
 			table.integer('user_id').unsigned().references('id').inTable('users');
 			table.timestamps();
