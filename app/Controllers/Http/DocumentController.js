@@ -1,5 +1,6 @@
 'use strict';
 const Document = use('App/Models/Document');
+const Tag = use('App/Models/Tag');
 
 class DocumentController {
 	async index({ auth, response }) {
@@ -156,6 +157,7 @@ class DocumentController {
 			console.log('# Document Query = ' + params.category);
 
 			const docs = await Document.query().where('categorie', params.category).whereNot('public', 0).fetch();
+
 			response.status(200).json({ docs });
 		} catch (error) {
 			console.log(error);
@@ -201,7 +203,16 @@ class DocumentController {
 				doc.categorie = request.input('categorie');
 			}
 			if (request.input('tags')) {
-				doc.tags = request.input('tags');
+				let tags = request.input('tags');
+				let tagsText = new String();
+				tags.forEach((tag) => {
+					tag = tag.toLowerCase();
+					tagsText = tagsText + tag + ' ';
+					(async function() {
+						await Tag.findOrCreate({ nom: tag }, { nom: tag });
+					})();
+				});
+				doc.tags = tagsText.slice(0, -1);
 			}
 
 			await doc.save();

@@ -62,3 +62,5 @@ Route.put('/documents/:id/comments', 'CommentController.create').middleware([ 'a
 Route.get('/documents/:id/comments/:idc', 'CommentController.show');
 Route.put('/documents/:id/comments/:idc', 'CommentController.update').middleware([ 'auth:jwt' ]);
 Route.delete('/documents/:id/comments/:idc', 'CommentController.destroy').middleware([ 'auth:jwt' ]);
+
+Route.get('/tags', 'TagController.index');
