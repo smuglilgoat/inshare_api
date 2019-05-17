@@ -1,6 +1,7 @@
 'use strict';
 const Document = use('App/Models/Document');
 const Tag = use('App/Models/Tag');
+const Database = use('Database');
 
 class DocumentController {
 	async index({ auth, response }) {
@@ -148,6 +149,24 @@ class DocumentController {
 			return response.status(500).json({
 				status: 'error',
 				message: "Nous n'avons pas pu recuperer le document."
+			});
+		}
+	}
+
+	async queryTags({ request, response }) {
+		try {
+			let tags = JSON.parse(request.input('tags'));
+			console.log('# Document Query = ' + tags);
+			const docs = await Database.raw(
+				'select * from documents where match(tags) AGAINST (? IN NATURAL LANGUAGE MODE)',
+				[ tags[0] ]
+			);
+			response.status(200).json({ docs });
+		} catch (error) {
+			console.log(error);
+			return response.status(404).json({
+				status: 'error',
+				message: "Nous n'avons pas pu recuperer les documents."
 			});
 		}
 	}

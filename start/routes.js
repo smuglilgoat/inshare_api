@@ -53,6 +53,7 @@ Route.delete('/documents/doc=:id', 'DocumentController.delete').middleware([ 'au
 
 Route.get('/documents/category=:category', 'DocumentController.queryCategory');
 Route.get('/documents/user=:id', 'DocumentController.queryUser');
+Route.get('/documents/query', 'DocumentController.queryTags');
 
 Route.post('/documents/:id/report', 'MailController.report').middleware([ 'auth:jwt' ]);
 Route.post('/documents/:id/rate', 'RatingController.update').middleware([ 'auth:jwt' ]);
