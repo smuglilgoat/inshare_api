@@ -2,6 +2,8 @@
 const Document = use('App/Models/Document');
 const Tag = use('App/Models/Tag');
 const Database = use('Database');
+var intersection = require('lodash.intersection');
+var min = require('lodash.min');
 
 class DocumentController {
 	async index({ auth, response }) {
@@ -156,12 +158,17 @@ class DocumentController {
 	async queryTags({ request, response }) {
 		try {
 			let tags = JSON.parse(request.input('tags'));
-			console.log('# Document Query = ' + tags);
-			const docs = await Database.raw(
-				'select * from documents where match(tags) AGAINST (? IN NATURAL LANGUAGE MODE)',
-				[ tags[0] ]
-			);
-			response.status(200).json({ docs });
+			console.log('# Document Query (' + tags.length + ') = ' + tags);
+			let docs = new Array();
+			for (let index = 0; index < tags.length; index++) {
+				const d = await Database.raw(
+					'select * from documents where match(tags) AGAINST (? IN NATURAL LANGUAGE MODE)',
+					[ tags[index] ]
+				);
+				docs.push(d[0]);
+			}
+			const result = min(intersection(docs))
+			response.status(200).json({ result });
 		} catch (error) {
 			console.log(error);
 			return response.status(404).json({
