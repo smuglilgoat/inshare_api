@@ -8,7 +8,7 @@ class DocumentSchema extends Schema {
 		this.create('documents', (table) => {
 			table.increments();
 			table.boolean('public').defaultTo(false);
-			table.enu('type', [ 'Image', 'PDF', 'Doc', 'Sheet', 'Slide' ]);
+			table.enu('type', [ 'Image', 'PDF', 'Doc', 'Sheet', 'Slide', 'Video' ]);
 			table.string('titre');
 			table.text('description', 'text');
 			table.enu('langue', [ 'Français', 'Arabe', 'Anglais' ]);

@@ -38,6 +38,7 @@ Route.get('/certificats/:id.jpg', 'FileController.viewCertif');
 Route.get('/documents/:id/download', 'FileController.downloadDoc');
 Route.get('/documents/:id/images/:filename', 'ImageController.viewImage');
 Route.get('/documents/:id/images', 'ImageController.index');
+Route.get('/documents/:id/video', 'VideoController.show');
 
 Route.get('/certificats', 'CertificatController.index').middleware([ 'auth:jwt' ]);
 Route.post('/certificats', 'CertificatController.create').middleware([ 'auth:jwt' ]);
@@ -46,7 +47,7 @@ Route.put('/certificats/:id', 'CertificatController.update').middleware([ 'auth:
 Route.delete('/certificats/:id', 'CertificatController.delete').middleware([ 'auth:jwt' ]);
 
 Route.get('/documents', 'DocumentController.index').middleware([ 'auth:jwt' ]);
-Route.post('/documents', 'DocumentController.create').middleware([ 'auth:jwt' ]);
+Route.post('/documents/create/t=:type', 'DocumentController.create').middleware([ 'auth:jwt' ]);
 Route.get('/documents/doc=:id', 'DocumentController.show');
 Route.put('/documents/doc=:id', 'DocumentController.update').middleware([ 'auth:jwt' ]);
 Route.delete('/documents/doc=:id', 'DocumentController.delete').middleware([ 'auth:jwt' ]);

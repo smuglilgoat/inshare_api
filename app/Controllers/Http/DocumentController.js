@@ -1,5 +1,6 @@
 'use strict';
 const Document = use('App/Models/Document');
+const Video = use('App/Models/Video');
 const Tag = use('App/Models/Tag');
 const Database = use('Database');
 var intersection = require('lodash.intersection');
@@ -28,108 +29,128 @@ class DocumentController {
 		}
 	}
 
-	async create({ request, auth, response }) {
+	async create({ request, auth, params, response }) {
 		try {
 			const user = auth.current.user;
 
-			const files = request.file('file', {
-				types: [ 'image' ],
-				size: '5mb'
-			});
-			if (files._files) {
-				const document = await user.document().create({ user_id: user.id, type: 'Image' });
-				try {
-					await files.moveAll(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id + '\\',
-						async function processFiles(file) {
-							try {
-								await document.image().create({
-									document_id: document.id,
-									size: file.size,
-									ext: file.extname,
-									name: file.clientName,
-									path:
-										'http://127.0.0.1:3333/documents/' + document.id + '/images/' + file.clientName
-								});
-								return {
-									name: '' + file.clientName
-								};
-							} catch (error) {
-								console.log(error);
-								return response.status(500).json({
-									status: 'error',
-									message: "Nous n'avons pas pu stocker l'image."
-								});
-							}
+			switch (params.type) {
+				case 'image':
+					console.log('# Document Upload (' + params.type + ')');
+
+					const files = request.file('file', {
+						types: [ 'image' ],
+						size: '5mb'
+					});
+					if (files._files) {
+						const document = await user.document().create({ user_id: user.id, type: 'Image' });
+						try {
+							await files.moveAll(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id + '\\',
+								async function processFiles(file) {
+									try {
+										await document.image().create({
+											document_id: document.id,
+											size: file.size,
+											ext: file.extname,
+											name: file.clientName,
+											path:
+												'http://127.0.0.1:3333/documents/' +
+												document.id +
+												'/images/' +
+												file.clientName
+										});
+										return {
+											name: '' + file.clientName
+										};
+									} catch (error) {
+										console.log(error);
+										return response.status(500).json({
+											status: 'error',
+											message: "Nous n'avons pas pu stocker l'image."
+										});
+									}
+								}
+							);
+							const fs = require('fs');
+							const archiver = require('archiver');
+
+							// create a file to stream archive data to.
+							var output = fs.createWriteStream(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
+							);
+							var archive = archiver('zip');
+
+							// pipe archive data to the file
+							archive.pipe(output);
+
+							// append files from a sub-directory, putting its contents at the root of archive
+							archive.directory(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
+								false
+							);
+
+							// finalize the archive (ie we are done appending files but streams have to finish yet)
+							// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+							archive.finalize();
+							response.status(201).json({ document });
+						} catch (error) {
+							console.log(error);
 						}
-					);
-					const fs = require('fs');
-					const archiver = require('archiver');
-
-					// create a file to stream archive data to.
-					var output = fs.createWriteStream(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
-					);
-					var archive = archiver('zip');
-
-					// pipe archive data to the file
-					archive.pipe(output);
-
-					// append files from a sub-directory, putting its contents at the root of archive
-					archive.directory(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
-						false
-					);
-
-					// finalize the archive (ie we are done appending files but streams have to finish yet)
-					// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
-					archive.finalize();
-					response.status(201).json({ document });
-				} catch (error) {
-					console.log(error);
-				}
-			} else {
-				const document = await user.document().create({ user_id: user.id, type: 'Image' });
-				await document.image().create({
-					document_id: document.id,
-					size: files.size,
-					ext: files.extname,
-					name: files.clientName,
-					path: 'http://127.0.0.1:3333/documents/' + document.id + '/images/' + files.clientName
-				});
-				try {
-					await files.move(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id + '\\',
-						{
+					} else {
+						const document = await user.document().create({ user_id: user.id, type: 'Image' });
+						await document.image().create({
+							document_id: document.id,
+							size: files.size,
+							ext: files.extname,
 							name: files.clientName,
-							overwrite: true
+							path: 'http://127.0.0.1:3333/documents/' + document.id + '/images/' + files.clientName
+						});
+						try {
+							await files.move(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id + '\\',
+								{
+									name: files.clientName,
+									overwrite: true
+								}
+							);
+							const fs = require('fs');
+							const archiver = require('archiver');
+
+							// create a file to stream archive data to.
+							var output = fs.createWriteStream(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
+							);
+							var archive = archiver('zip');
+
+							// pipe archive data to the file
+							archive.pipe(output);
+
+							// append files from a sub-directory, putting its contents at the root of archive
+							archive.directory(
+								'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
+								false
+							);
+
+							// finalize the archive (ie we are done appending files but streams have to finish yet)
+							// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+							archive.finalize();
+							response.status(201).json({ document });
+						} catch (error) {
+							console.log(error);
 						}
-					);
-					const fs = require('fs');
-					const archiver = require('archiver');
-
-					// create a file to stream archive data to.
-					var output = fs.createWriteStream(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + document.id + '.zip'
-					);
-					var archive = archiver('zip');
-
-					// pipe archive data to the file
-					archive.pipe(output);
-
-					// append files from a sub-directory, putting its contents at the root of archive
-					archive.directory(
-						'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + document.id,
-						false
-					);
-
-					// finalize the archive (ie we are done appending files but streams have to finish yet)
-					// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
-					archive.finalize();
+					}
+					break;
+				case 'video':
+					const document = await Document.create({ user_id: user.id, type: 'Video' });
+					const video = await Video.create({
+						document_id: document.id,
+						provider: request.input('provider'),
+						link: request.input('link')
+					});
 					response.status(201).json({ document });
-				} catch (error) {
-					console.log(error);
-				}
+					break;
+				default:
+					break;
 			}
 		} catch (error) {
 			console.log(error);
@@ -167,7 +188,7 @@ class DocumentController {
 				);
 				docs.push(d[0]);
 			}
-			const result = min(intersection(docs))
+			const result = min(intersection(docs));
 			response.status(200).json({ result });
 		} catch (error) {
 			console.log(error);
@@ -229,16 +250,18 @@ class DocumentController {
 				doc.categorie = request.input('categorie');
 			}
 			if (request.input('tags')) {
-				let tags = request.input('tags');
-				let tagsText = new String();
-				tags.forEach((tag) => {
-					tag = tag.toLowerCase();
-					tagsText = tagsText + tag + ' ';
-					(async function() {
-						await Tag.findOrCreate({ nom: tag }, { nom: tag });
-					})();
-				});
-				doc.tags = tagsText.slice(0, -1);
+				if (request.input('tags').length != 0) {
+					let tags = request.input('tags');
+					let tagsText = new String();
+					tags.forEach((tag) => {
+						tag = tag.toLowerCase();
+						tagsText = tagsText + tag + ' ';
+						(async function() {
+							await Tag.findOrCreate({ nom: tag }, { nom: tag });
+						})();
+					});
+					doc.tags = tagsText.slice(0, -1);
+				}
 			}
 
 			await doc.save();
