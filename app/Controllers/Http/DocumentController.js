@@ -50,8 +50,6 @@ class DocumentController {
 									try {
 										await document.image().create({
 											document_id: document.id,
-											size: file.size,
-											ext: file.extname,
 											name: file.clientName,
 											path:
 												'http://127.0.0.1:3333/documents/' +
@@ -100,8 +98,6 @@ class DocumentController {
 						const document = await user.document().create({ user_id: user.id, type: 'Image' });
 						await document.image().create({
 							document_id: document.id,
-							size: files.size,
-							ext: files.extname,
 							name: files.clientName,
 							path: 'http://127.0.0.1:3333/documents/' + document.id + '/images/' + files.clientName
 						});

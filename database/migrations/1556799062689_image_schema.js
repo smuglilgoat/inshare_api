@@ -9,8 +9,6 @@ class ImageSchema extends Schema {
 			table.increments();
 			table.string('path');
 			table.string('name');
-			table.string('ext');
-			table.integer('size').unsigned();
 			table.integer('document_id').unsigned().references('id').inTable('documents');
 			table.timestamps();
 		});

@@ -8,8 +8,8 @@ class RatingSchema extends Schema {
 		this.create('ratings', (table) => {
 			table.increments();
 			table.integer('user_id').unsigned().references('id').inTable('users');
-      table.integer('document_id').unsigned().references('id').inTable('documents');
-      table.decimal('rating')
+			table.integer('document_id').unsigned().references('id').inTable('documents');
+			table.decimal('rating');
 			table.timestamps();
 		});
 	}
