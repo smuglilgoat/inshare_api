@@ -41,6 +41,20 @@ class UserController {
 		}
 	}
 
+	async showMe({ auth, response }) {
+		try {
+			const user = auth.current.user;
+			response.status(200).json({ user });
+		} catch (error) {
+			console.log(error);
+
+			return response.status(404).json({
+				status: 'error',
+				message: "Nous n'avons pas pu récuperer l'utilisateur."
+			});
+		}
+	}
+
 	async update({ request, auth, response, params }) {
 		const authUser = auth.current.user;
 

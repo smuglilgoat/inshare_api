@@ -108,10 +108,12 @@ class CommentController {
    * @param {Response} ctx.response
    */
 	async destroy({ params, auth, response }) {
+		console.log('#Comment (Delete) => Doc=' + params.id + ' Comm=' + params.idc);
+
 		try {
 			const authUser = auth.current.user;
 
-			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur' && authUser.id != doc.user_id) {
+			if (authUser.role != 'Administrateur' && authUser.role != 'Moderateur') {
 				return response.status(401).json({
 					status: 'error',
 					message: 'Accès interdit.'

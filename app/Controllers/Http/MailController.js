@@ -7,7 +7,7 @@ class MailController {
 			const user = auth.current.user;
 			await Mail.raw('message', (message) => {
 				message.from('pfe@pfe.com');
-				message.to('sofianezegood@gmail.com');
+				message.to('k.mame2810@gmail.com');
 				message.subject('Signalement du document #' + params.id);
 				message.text(
 					'Utilisateur: ' +

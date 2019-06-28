@@ -27,6 +27,7 @@ Route.group(() => {
 
 Route.get('/users', 'UserController.index').middleware([ 'auth:jwt' ]);
 Route.get('/users/:id', 'UserController.show');
+Route.get('/users/me', 'UserController.showMe').middleware([ 'auth:jwt' ]);
 Route.put('/users/:id', 'UserController.update').middleware([ 'auth:jwt' ]);
 Route.delete('/users/:id', 'UserController.delete').middleware([ 'auth:jwt' ]);
 
