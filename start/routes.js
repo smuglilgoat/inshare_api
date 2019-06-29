@@ -40,6 +40,8 @@ Route.get('/documents/:id/download', 'FileController.downloadDoc');
 Route.get('/documents/:id/images/:filename', 'ImageController.viewImage');
 Route.get('/documents/:id/images', 'ImageController.index');
 Route.get('/documents/:id/video', 'VideoController.show');
+Route.get('/documents/:id/doc/:filename', 'DocController.viewDoc');
+Route.get('/documents/:id/doc', 'DocController.show');
 
 Route.get('/certificats', 'CertificatController.index').middleware([ 'auth:jwt' ]);
 Route.post('/certificats', 'CertificatController.create').middleware([ 'auth:jwt' ]);

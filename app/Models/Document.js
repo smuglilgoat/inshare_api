@@ -10,6 +10,9 @@ class Document extends Model {
 	comments() {
 		return this.hasMany('App/Models/Comment');
 	}
+	doc() {
+		return this.hasOne('App/Models/Doc');
+	}
 }
 
 module.exports = Document;

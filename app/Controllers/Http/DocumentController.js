@@ -145,6 +145,63 @@ class DocumentController {
 					});
 					response.status(201).json({ document });
 					break;
+				case 'doc':
+					console.log('# Document Upload (' + params.type + ')');
+
+					const dfiles = request.file('file', {
+						size: '24mb',
+						extnames: [ 'pdf', 'doc', 'docx', 'ppt', 'pptx' ]
+					});
+
+					const ddocument = await user.document().create({ user_id: user.id, type: 'Doc' });
+					await ddocument.doc().create({
+						document_id: ddocument.id,
+						name: dfiles.clientName.replace(/ /g, ''),
+						path:
+							'http://127.0.0.1:3333/documents/' +
+							ddocument.id +
+							'/doc/' +
+							dfiles.clientName.replace(/ /g, '')
+					});
+					try {
+						await dfiles.move(
+							'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + ddocument.id + '\\',
+							{
+								name: dfiles.clientName.replace(/ /g, ''),
+								overwrite: true
+							}
+						);
+
+						if (!dfiles.moved()) {
+							console.log(dfiles.error());
+						}
+
+						const fs = require('fs');
+						const archiver = require('archiver');
+
+						// create a file to stream archive data to.
+						var output = fs.createWriteStream(
+							'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + ddocument.id + '.zip'
+						);
+						var archive = archiver('zip');
+
+						// pipe archive data to the file
+						archive.pipe(output);
+
+						// append files from a sub-directory, putting its contents at the root of archive
+						archive.directory(
+							'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Documents\\' + ddocument.id,
+							false
+						);
+
+						// finalize the archive (ie we are done appending files but streams have to finish yet)
+						// 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+						archive.finalize();
+						response.status(201).json({ ddocument });
+					} catch (error) {
+						console.log(error);
+					}
+					break;
 				default:
 					break;
 			}
