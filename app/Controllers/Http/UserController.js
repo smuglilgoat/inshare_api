@@ -94,7 +94,7 @@ class UserController {
 				}
 
 				await user.save();
-				response.status(200);
+				response.status(200).json({ user });
 			} catch (error) {
 				console.log(error);
 

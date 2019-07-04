@@ -34,7 +34,7 @@ class FileController {
 
 			user.avatar = 'http://127.0.0.1:3333/avatars/' + user.id + '.jpg';
 			await user.save();
-			response.status(201);
+			response.status(201).json({ user });
 		} catch (error) {
 			console.log(error);
 			return response.status(500).json({
@@ -63,7 +63,7 @@ class FileController {
 				response.attachment(
 					'G:\\Documents\\Code\\Web\\pfe\\pfe-api\\app\\Files\\Downloads\\' + params.id + '.zip'
 				);
-			} 
+			}
 		} catch (error) {
 			console.log(error);
 		}
