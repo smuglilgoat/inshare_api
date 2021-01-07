@@ -1,3 +1,9 @@
+# inShare-server
+
+A community driven file sharing website.
+Server side app made with AdonisJs and NodeJs.
+Feel free to inspire yourself.
+
 # Adonis API application
 
 This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.
