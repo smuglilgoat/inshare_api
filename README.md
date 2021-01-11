@@ -1,4 +1,4 @@
-# inShare-server
+# 📲 inShare API
 
 A community driven file sharing website.
 Server side app made with AdonisJs and NodeJs.
