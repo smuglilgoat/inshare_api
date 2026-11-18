@@ -1,34 +1,46 @@
-# 📲 inShare API
+# inShare API
 
-A community driven file sharing website.
-Server side app made with AdonisJs and NodeJs.
-Feel free to inspire yourself.
+Server side of **inShare**, a community driven file sharing website. Built with AdonisJS 4 and Node.js.
 
-# Adonis API application
+See [inshare_client](https://github.com/smuglilgoat/inshare_client) for the Vue front end.
 
-This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.
+## What it does
 
-1. Bodyparser
-2. Authentication
-3. CORS
-4. Lucid ORM
-5. Migrations and seeds
+A JWT-authenticated REST API for users, uploaded documents and their metadata:
 
-## Setup
+- **Auth** — `POST /auth/register`, `POST /auth/login`; JWT for protected routes.
+- **Users** — profile read/update/delete, user search (`/users-list`), avatars.
+- **Documents** — create by type (`t=:type`), read, update, delete, filter by category, user or tags.
+- **Files** — document download, preview images, video and document viewers, certificates.
+- **Community** — tags, ratings, comments and report-by-mail on a document.
 
-Use the adonis command to install the blueprint
+Models and migrations cover `User`, `Document`, `Doc`, `Image`, `Video`, `Tag`, `Rating`, `Comment` and `Certificat`.
+
+## Stack
+
+- AdonisJS 4.1 (`@adonisjs/framework`, Lucid ORM, auth, drive, mail)
+- Node.js, MySQL or SQLite through Lucid (`config/database.js` also declares PostgreSQL)
+- JWT authentication (`config/auth.js`)
+
+## Getting started
 
 ```bash
-adonis new yardstick --api-only
+npm install
+cp .env.example .env
 ```
 
-or manually clone the repo and then run `npm install`.
+Set at least `APP_KEY` in `.env` (used as the JWT secret), then create the schema and start the server:
 
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
+```bash
+node ace migration:run
+npm start          # node server.js, port 3333 by default
 ```
+
+Database settings come from `DB_*` variables in `.env`; the example uses SQLite.
+
+## Notes
+
+- `app/Controllers/Http/FileController.js` uses absolute Windows paths (`G:\Documents\...`) for avatars, certificates and downloads. Change them before running on another machine.
+- File endpoints read and write under `app/Files/`; only a placeholder avatar is versioned.
+- The API accepts JSON bodies; authenticated routes expect `Authorization: Bearer <token>`.
+- No automated test suite is included (`npm test` runs `node ace test`).
